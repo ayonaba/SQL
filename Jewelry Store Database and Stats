@@ -1,0 +1,15 @@
+--Create a store database, provide stats
+
+CREATE TABLE jewelry (id INTEGER PRIMARY KEY, name TEXT, price INTEGER, aisle TEXT, manufacturer TEXT);
+
+INSERT INTO jewelry VALUES (456, "gold bracelets",16,1,"Ashley");
+INSERT INTO jewelry VALUES (1023, "gold necklace",30,2,"Leslie");
+INSERT INTO jewelry VALUES (4011, "silver bracelets",14,1,"Maisie");
+INSERT INTO jewelry VALUES (4156, "silver necklace",25,2,"Leslie");
+
+--display the sum of the prices of all of the items in the database
+SELECT sum(price) FROM jewelry;
+
+--display the database ordered by price, descending order
+SELECT * FROM jewelry
+ORDER BY price desc;
