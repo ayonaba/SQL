@@ -1,0 +1,50 @@
+CREATE TABLE teachers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    age INTEGER);
+    
+INSERT INTO teachers (name, age) VALUES ("Vignes", "52");
+INSERT INTO teachers (name, age) VALUES ("Pontiff", "48");
+INSERT INTO teachers (name, age) VALUES ("Bullard", "45");
+INSERT INTO teachers (name, age) VALUES ("Buzbee", "30");
+INSERT INTO teachers (name, age) VALUES ("Grzych", "45");
+
+CREATE table subject_taught (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    name TEXT);
+    
+INSERT INTO subject_taught (person_id, name) VALUES (1, "world history");
+INSERT INTO subject_taught (person_id, name) VALUES (1, "geography");
+INSERT INTO subject_taught (person_id, name) VALUES (2, "English V");
+INSERT INTO subject_taught (person_id, name) VALUES (2, "English IV");
+INSERT INTO subject_taught (person_id, name) VALUES (3, "Algebra 1");
+INSERT INTO subject_taught (person_id, name) VALUES (3, "Algebra 2");
+INSERT INTO subject_taught (person_id, name) VALUES (3, "Geometry");
+INSERT INTO subject_taught (person_id, name) VALUES (4, "Algebra 1");
+INSERT INTO subject_taught (person_id, name) VALUES (4, "Geometry");
+INSERT INTO subject_taught (person_id, name) VALUES (4, "Algebra 2");
+INSERT INTO subject_taught (person_id, name) VALUES (5, "Science");
+
+CREATE table friends (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person1_id INTEGER,
+    person2_id INTEGER);
+
+INSERT INTO friends (person1_id, person2_id)
+    VALUES (1, 2);
+INSERT INTO friends (person1_id, person2_id)
+    VALUES (5, 3);
+    
+/* This query lists all teachers in the table and which subjects they taught.*/
+SELECT teachers.name, subject_taught.name FROM teachers
+    JOIN subject_taught
+    ON teachers.id=subject_taught.person_id;
+
+/* This query lists teachers with friend, if they have one.*/  
+SELECT a.name, b.name FROM friends
+    JOIN teachers a
+    ON friends.person1_id=a.id
+    JOIN teachers b
+    ON friends.person2_id=b.id;
+    
