@@ -1,3 +1,5 @@
+/*The query at the end of this table with astronaut information orders them by name.*/
+
 CREATE TABLE astronauts(
    Name                TEXT PRIMARY KEY,
    Year                INTEGER,
