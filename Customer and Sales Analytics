@@ -79,3 +79,74 @@ SELECT distinct Product, sum(quantity)
 FROM BIT_DB.FebSales
 WHERE location like '%Los Angeles%'
 GROUP BY product;
+
+
+/*This views the JanSales table data types.*/
+SELECT * FROM BIT_DB.FebSales limit 30;
+
+/*This answers the question: Which locations in New York received at least 3 orders in January, and how many orders did they each receive?*/
+SELECT location, count(orderID) as total_orders FROM BIT_DB.JanSales
+WHERE location like '%New York%'
+GROUP BY location
+HAVING COUNT(orderID)>2
+;
+
+/*This answers the same question in a different way.*/
+SELECT distinct location, count(orderID)
+FROM BIT_DB.JanSales
+WHERE location LIKE '%NY%'
+GROUP BY location
+HAVING count(orderID)>2;
+
+SELECT * FROM BIT_DB.JanSales limit 30;
+
+/*This shows how many of each type of headphone were sold in February.*/
+SELECT product, sum(quantity) FROM BIT_DB.FebSales
+WHERE product LIKE '%Headphones%'
+GROUP BY product;
+
+/*This is another version of the query above.*/
+SELECT sum(Quantity) as quantity,
+Product
+FROM BIT_DB.FebSales 
+WHERE Product like '%Headphones%'
+GROUP BY Product;
+
+
+/*This shows the average amount spent per account in February (not the average each account spent).*/
+SELECT sum(quantity*price)/count(customers.acctnum) FROM BIT_DB.FebSales
+JOIN BIT_DB.customers
+ON FebSales.orderID=customers.order_id;
+
+/*This is another version of the query above.*/
+SELECT sum(quantity*price)/count(cust.acctnum)
+FROM BIT_DB.FebSales Feb
+
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderid=cust.order_id;
+
+/*This shows the average quantity of products sold in February (not the average per account).*/
+SELECT sum(quantity)/count(customers.acctnum) FROM BIT_DB.FebSales
+JOIN BIT_DB.customers
+ON FebSales.orderID=customers.order_id;
+
+/*This is another version of the query above.*/
+select sum(quantity)/count(cust.acctnum)
+FROM BIT_DB.FebSales Feb
+
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderid=cust.order_id;
+
+/*This shows which product brought in the most revenue and how much it brought in in January.*/
+SELECT sum(quantity*price), product FROM BIT_DB.JanSales
+GROUP BY product
+ORDER BY sum(quantity*price) DESC
+LIMIT 1;
+
+/*This is another version of the query above.*/
+SELECT product, 
+sum(quantity*price)
+FROM BIT_DB.JanSales 
+GROUP BY product
+ORDER BY sum(quantity*price) desc 
+LIMIT 1;
