@@ -1,0 +1,50 @@
+/*this shows the count of orders in January*/
+SELECT count(orderID) FROM BIT_DB.JanSales;
+
+/*This shows which fields are available and what data in each column looks like for the JanSales table.*/
+SELECT * FROM BIT_DB.JanSales limit 10;
+
+/*this shows how many of the January Sales orders were for iPhones.*/
+SELECT count(orderID) FROM BIT_DB.JanSales
+where Product='iPhone';
+
+/*this shows the cheapest product sold in January, along with its price.*/
+SELECT distinct MIN(price), product FROM JanSales;
+
+/*this is another query showing cheapest product sold in January, along with its price.*/
+SELECT distinct Product, price
+FROM BIT_DB.JanSales
+WHERE  price in (SELECT min(price) FROM BIT_DB.JanSales);
+
+/*this shows all of the account numbers from customers who placed orders in February.*/
+SELECT customers.acctnum FROM FebSales
+JOIN customers
+ON FebSales.orderID=customers.order_id
+ORDER BY acctnum;
+
+/*this is another quesry showing all of the account numbers from customers who placed orders in February.*/
+SELECT acctnum
+FROM BIT_DB.customers cust
+
+INNER JOIN BIT_DB.FebSales Feb
+ON cust.order_id=FEB.orderid;
+
+/*this lists the total revenue for each product sold in January.*/
+SELECT product, sum(quantity)*price as total_revenue FROM JanSales GROUP BY product;
+
+/*This shows which fields are available and what data in each column looks like for the FebSales table.*/
+SELECT * FROM BIT_DB.FebSales limit 30;
+
+/*This shows which products were sold at this address, how many of each, and the average price from February sales.*/
+SELECT product, sum(quantity) as count, sum(quantity)*price as revenue FROM FebSales
+WHERE location='548 Lincoln St, Seattle, WA 98101'
+GROUP BY product;
+
+/*This shows how many customers ordered more than two items at a time in February and their average amount spent.*/
+select 
+count(cust.acctnum), 
+avg(quantity*price)
+FROM BIT_DB.FebSales Feb
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderid=cust.order_id
+WHERE Feb.Quantity>2;
