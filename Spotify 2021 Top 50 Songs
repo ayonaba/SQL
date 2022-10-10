@@ -40,3 +40,23 @@ order by danceability desc;
 /*Counts the number of songs in the top 50 list with a danceability of .7 or higher.*/
 SELECT count(danceability)  FROM BIT_DB.Spotifydata
 WHERE danceability >=0.7;
+
+/*lists artist name and their average song popularity from within the top 50 list.*/
+SELECT s.artist_name,
+AVG(s.popularity) AS average_popularity 
+FROM Spotifydata s
+GROUP BY artist_name;
+
+/*creates a temporary table from the Spotify table that lists artist name and their average song popularity from within the top 50 list. Then, lists only the Top Stars with average popularity of 90 or higher.*/
+
+WITH popularity_average_CTE AS (
+SELECT s.artist_name,
+AVG(s.popularity) AS average_popularity
+FROM spotifyData s 
+GROUP BY s.artist_name
+)
+
+SELECT artist_name, average_popularity, 'Top Star' AS tag
+FROM popularity_average_CTE
+WHERE average_popularity >=90;
+
