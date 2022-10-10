@@ -1,0 +1,248 @@
+/*View data in chinook database customers table.*/
+SELECT * FROM chinook.customers;
+
+/*Show Customers (their full names, customer ID, and country) who are not in the US. (Hint: != or <> can be used to say "is not equal to").*/
+SELECT LastName, FirstName, CustomerId, Country FROM customers
+WHERE country <> 'USA';
+
+/*Show only the Customers from Brazil.*/
+SELECT LastName, FirstName, CustomerId, Country FROM customers
+WHERE country = 'Brazil';
+
+/*View data in chinook database invoices table.*/
+SELECT * FROM chinook.invoices;
+
+/*Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.*/
+SELECT customers.LastName, customers.FirstName, invoices.InvoiceId, invoices.InvoiceDate, invoices.BillingCountry Country FROM invoices
+LEFT JOIN chinook.customers
+ON invoices.CustomerId=customers.CustomerId
+WHERE customers.country = 'Brazil'
+;
+
+/*Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.*/
+SELECT customers.LastName, customers.FirstName, invoices.InvoiceId, invoices.InvoiceDate, invoices.BillingCountry Country FROM customers
+LEFT JOIN chinook.invoices
+ON customers.CustomerId=invoices.CustomerId
+WHERE customers.country = 'Brazil'
+;
+
+/*View data in chinook database employees table.*/
+SELECT * FROM chinook.employees;
+
+/*Show the Employees who are Sales Agents.*/
+SELECT lastname, firstname, title FROM employees
+WHERE title='Sales Support Agent';
+
+/*Make a list of all billing countries in chinook database invoices table.*/
+SELECT billingcountry FROM chinook.invoices
+GROUP BY billingcountry;
+
+/*List customers by name and their service reps by name.*/
+SELECT 
+customers.CustomerId,
+customers.FirstName AS CustFirst, 
+customers.LastName AS CustLast, 
+employees.EmployeeId,
+employees.LastName AS RepLast, 
+employees.FirstName AS RepFirst
+FROM customers
+LEFT JOIN employees
+ON customers.SupportRepId=employees.EmployeeId
+GROUP BY CustomerId;
+
+/*Lists the invoices associated with each sales agent.*/
+SELECT 
+
+employees.EmployeeId,
+employees.LastName AS RepLast, 
+employees.FirstName AS RepFirst,
+invoices.InvoiceId
+FROM employees
+
+JOIN customers
+ON customers.SupportRepId=employees.EmployeeId
+
+JOIN invoices
+ON invoices.CustomerId=customers.CustomerId;
+
+/*another version of the list of sales representatives with their invoices.*/
+SELECT emp.LastName, emp.Firstname, inv.InvoiceId
+FROM chinook.Employees emp 
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId;
+
+/*Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.*/
+SELECT 
+inv.Total, 
+cust.FirstName, 
+cust.LastName, 
+cust.Country, 
+emp.FirstName AS RepFirst, 
+emp.LastName AS RepLast
+FROM invoices inv
+JOIN customers cust ON inv.CustomerId=cust.CustomerId
+JOIN employees emp ON emp.employeeID=cust.SupportRepId;
+
+/*another version of the list of sales representatives with their invoice totals by customer.*/
+SELECT emp.LastName, emp.Firstname, cust.FirstName, cust.LastName, cust.Country, inv.total
+FROM chinook.employees emp 
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId;
+
+/*Counts the number of invoices in 2009.*/
+SELECT count(invoices.InvoiceId) FROM invoices
+WHERE invoices.InvoiceDate LIKE '%2009%';
+
+/*Another version of the count of invoices in 2009.*/
+SELECT COUNT(*)
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+/*Sums sales for 2009.*/
+SELECT sum(Total) FROM chinook.invoices
+WHERE InvoiceDate LIKE '%2009%';
+
+/*Another version of the sum of 2009 sales.*/
+SELECT SUM(Total)
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+/*Lists track name for each invoice line ID.*/
+SELECT 
+invoice_items.InvoiceId,
+tracks.TrackId,
+tracks.Name
+FROM chinook.invoice_items
+JOIN tracks
+ON invoice_items.TrackId=tracks.TrackId;
+
+/*Another version of the list of track names for each invoice line ID.*/
+SELECT t.Name, i.InvoiceLineId
+FROM chinook.Invoice_items i
+JOIN chinook.Tracks t 
+ON i.TrackId = t.TrackId;
+
+/*Lists track names and artist names for each invoice line ID.*/
+SELECT t.Name AS track, i.InvoiceLineId, ar.name AS artist
+FROM chinook.Invoice_items i
+LEFT JOIN chinook.Tracks t 
+ON i.TrackId = t.TrackId
+
+INNER JOIN chinook.albums al
+ON t.AlbumID=al.AlbumID
+
+LEFT JOIN chinook.artists ar
+ON al.Artistid=ar.Artistid;
+
+/*Another version of query that lists track names and artist names for each invoice line ID.*/
+SELECT ar.name as Artist, t.Name as Track, i.InvoiceLineId
+FROM chinook.Invoice_items i
+LEFT JOIN chinook.tracks t 
+ON i.TrackID=t.TrackID
+INNER JOIN chinook.albums a
+ON a.AlbumID=t.AlbumID
+LEFT JOIN chinook.artists ar
+ON ar.ArtistID=a.ArtistID;
+
+/*lists all track names with their album name, media type and genre.*/
+SELECT t.name as Track, al.title as AlbumTitle, m.name as MediaType, g.name as Genre
+FROM chinook.tracks t
+
+JOIN chinook.albums al
+ON t.Albumid=al.Albumid
+
+JOIN chinook.media_types m
+ON t.MediaTypeid=m.MediaTypeid
+
+JOIN chinook.genres g
+ON t.genreid=g.Genreid;
+
+/*Another version of the query that lists all track names with their album name, media type and genre.*/
+SELECT t.Name AS 'Track Name', a.Title AS 'Album Title', m.Name AS 'Media Type', g.Name AS 'Genre'
+FROM chinook.tracks t
+JOIN chinook.Albums a 
+on a.AlbumId = t.AlbumId
+JOIN chinook.Media_Types m
+on m.MediaTypeId = t.MediaTypeId
+JOIN chinook.Genres g
+on g.GenreId = t.GenreId;
+
+/*View data in chinook database invoice_items table.*/
+SELECT * FROM chinook.invoice_items; 
+
+
+/*View each Invoice Total with its Customer and Sales Rep names.*/
+SELECT 
+i.total as 'Invoice Total',
+c.LastName as 'Customer Last Name',
+e.LastName as 'SalesRep Last Name'
+FROM chinook.invoices i
+    
+JOIN chinook.customers c
+ON i.CustomerId=c.Customerid
+JOIN chinook.employees e
+ON c.SupportRepid=e.Employeeid
+; 
+
+/*View Total Sales by Sales Rep.*/
+SELECT
+e.LastName AS 'Sales Rep Last Name',
+e.FirstName AS 'Sales Rep First Name',
+ROUND(SUM(i.total),2) AS 'Total Sales'
+FROM chinook.invoices i
+
+JOIN chinook.customers c
+ON i.CustomerId=c.Customerid
+
+JOIN chinook.employees e
+ON c.SupportRepid=e.Employeeid 
+
+GROUP BY e.Employeeid;
+
+/*Another version of viewing total sales by sales rep.*/
+SELECT emp.FirstName, cemp.LastName,
+ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM chinook.Employees emp
+
+JOIN chinook.Customers cust 
+ON cust.SupportRepId = emp.EmployeeId
+
+JOIN chinook.Invoices Inv 
+ON Inv.CustomerId = cust.CustomerId
+
+WHERE emp.Title = 'Sales Support Agent' 
+GROUP BY emp.FirstName;
+
+/*Indicates the top sales rep for 2009.*/
+SELECT
+e.LastName AS 'Sales Rep Last Name',
+e.FirstName AS 'Sales Rep First Name',
+ROUND(SUM(i.total),2) AS 'Total Sales'
+FROM chinook.invoices i
+
+JOIN chinook.customers c
+ON i.CustomerId=c.Customerid
+
+JOIN chinook.employees e
+ON c.SupportRepid=e.Employeeid 
+
+WHERE i.invoicedate LIKE '2009%'
+GROUP BY e.Employeeid
+ORDER BY (ROUND(SUM(i.total),2) ) DESC LIMIT 1
+;
+
+/*Another version which indicates the top sales rep for 2009.*/
+SELECT emp.FirstName, emp.LastName,
+ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM chinook.Employees emp
+
+JOIN chinook.Customers cust 
+ON cust.SupportRepId = emp.EmployeeId
+
+JOIN chinook.Invoices Inv 
+ON Inv.CustomerId = cust.CustomerId
+
+WHERE emp.Title = 'Sales Support Agent' 
+AND Inv.InvoiceDate LIKE '2009%' 
+GROUP BY emp.FirstName
+ORDER BY (round(sum(Inv.Total), 2))  DESC LIMIT 1;
